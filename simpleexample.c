@@ -1,3 +1,4 @@
+#include <math.h>
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
 #include <Glut/glut.h>
@@ -5,16 +6,12 @@
 #define kWindowWidth 400
 #define kWindowHeight 300
 
-typedef GLfloat point[3]; 
+const GLdouble pi = 3.1415926535897932384626433832795;
 
-point v[4] ={{0.0, 0.0, 1.0}, 
-             {0.0, 0.942809, -0.333333}, 
-             {-0.816497, -0.471405, -0.333333}, 
-             {0.816497, -0.471405, -0.333333}};
-
+typedef GLdouble point[3];
 
 GLvoid DrawGLScene(void);
-void tetrahedron(void);
+void pentagon(void);
 void triangle(point a, point b, point c);
 
 int main(int argc, char **argv)
@@ -33,26 +30,40 @@ int main(int argc, char **argv)
 
 GLvoid DrawGLScene(void)
 {
-  glClear(GL_COLOR_BUFFER_BIT); 
-  glColor3f(1.0,1.0,1.0); 
-  glLoadIdentity(); 
+  glClear(GL_COLOR_BUFFER_BIT);
+  glColor3f(1.0,1.0,1.0);
+  glLoadIdentity();
 
-  tetrahedron(); 
+  pentagon();
   glutSwapBuffers();
 }
 
-void triangle( point a, point b, point c) 
-{ 
+void triangle( point a, point b, point c)
+{
   glBegin(GL_LINE_LOOP);
-  glVertex3fv(a); 
-  glVertex3fv(b); 
-  glVertex3fv(c); 
-  glEnd(); 
+  glVertex3dv(a);
+  glVertex3dv(b);
+  glVertex3dv(c);
+  glEnd();
 }
 
-void tetrahedron(void) 
-{ 
-  triangle(v[0], v[1], v[2]); 
-  triangle(v[3], v[2], v[1]); 
-  triangle(v[0], v[2], v[3]); 
-} 
+void pentagon(void)
+{
+  GLdouble c1 = cos(2.0f * pi / 5.0f);
+  GLdouble c2 = cos(pi / 5.0f);
+  GLdouble s1 = sin(2.0f * pi / 5.0f);
+  GLdouble s2 = sin(4.0f * pi / 5.0f);
+
+  point v[6] = {{0.0, 0.0, 1.0},
+                {0.0, 1.0, -0.333333},
+                {s1, c1, -0.333333},
+                {s2, -c2, -0.333333},
+                {-s2, -c2, -0.333333},
+                {-s1, c1, -0.333333}};
+
+  triangle(v[0], v[1], v[2]);
+  triangle(v[0], v[2], v[3]);
+  triangle(v[0], v[3], v[4]);
+  triangle(v[0], v[4], v[5]);
+  triangle(v[0], v[5], v[1]);
+}
